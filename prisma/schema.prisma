@@ -1,0 +1,86 @@
+// This is your Prisma schema file
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── User Model ────────────────────────────────────────────────────
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  email     String   @unique
+  password  String
+  role      UserRole
+
+  // Relations
+  articles  Article[]
+  readLogs  ReadLog[]
+
+  @@map("users")
+}
+
+enum UserRole {
+  author
+  reader
+}
+
+// ─── Article Model ─────────────────────────────────────────────────
+model Article {
+  id        String        @id @default(uuid()) @db.Uuid
+  title     String        @db.VarChar(150)
+  content   String        @db.Text
+  category  String
+  status    ArticleStatus @default(Draft)
+  authorId  String        @db.Uuid
+  createdAt DateTime      @default(now())
+  deletedAt DateTime?
+
+  // Relations
+  author         User             @relation(fields: [authorId], references: [id])
+  readLogs       ReadLog[]
+  dailyAnalytics DailyAnalytics[]
+
+  @@map("articles")
+}
+
+enum ArticleStatus {
+  Draft
+  Published
+}
+
+// ─── ReadLog Model (Raw Event Data) ────────────────────────────────
+model ReadLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  articleId String   @db.Uuid
+  readerId  String?  @db.Uuid
+  readAt    DateTime @default(now())
+
+  // Relations
+  article Article @relation(fields: [articleId], references: [id])
+  reader  User?   @relation(fields: [readerId], references: [id])
+
+  @@index([articleId, readAt])
+  @@index([readerId])
+  @@map("read_logs")
+}
+
+// ─── DailyAnalytics Model (Aggregated Data) ────────────────────────
+model DailyAnalytics {
+  id        String   @id @default(uuid()) @db.Uuid
+  articleId String   @db.Uuid
+  viewCount Int      @default(0)
+  date      DateTime @db.Date
+
+  // Relations
+  article Article @relation(fields: [articleId], references: [id])
+
+  // Unique constraint: one row per article per day
+  @@unique([articleId, date], name: "articleId_date")
+  @@map("daily_analytics")
+}
