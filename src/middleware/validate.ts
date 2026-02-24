@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { AnyZodObject, ZodError } from 'zod';
+import { ValidationError } from '../utils/errors';
 
 /**
  * Centralized validation middleware using Zod schemas.
@@ -20,13 +21,7 @@ export const validate = (schema: AnyZodObject) => {
                     const path = e.path.slice(1).join('.'); // Remove 'body'/'query'/'params' prefix
                     return `${path}: ${e.message}`;
                 });
-                next({
-                    statusCode: 422,
-                    message: 'Validation failed',
-                    errors,
-                    isOperational: true,
-                    name: 'ValidationError',
-                } as Error & { statusCode: number; errors: string[]; isOperational: boolean });
+                next(new ValidationError(errors));
                 return;
             }
             next(error);

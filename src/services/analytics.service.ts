@@ -1,14 +1,25 @@
 import { prisma } from '../config/database';
 import { analyticsQueue } from '../jobs/queues';
 import { logger } from '../utils/logger';
+import { getRedisConnection } from '../config/redis';
+import { config } from '../config/environment';
 
 export class AnalyticsService {
     /**
-     * Record a read event (non-blocking).
-     * Creates a ReadLog entry and adds to analytics queue.
+     * Record a read event (non-blocking) with rate limiting.
+     * Prevents duplicate reads from the same user/IP within a time window.
      */
-    static async recordRead(articleId: string, readerId: string | null): Promise<void> {
+    static async recordRead(articleId: string, readerId: string | null, ip?: string): Promise<void> {
         try {
+            const redis = getRedisConnection();
+            const identifier = readerId || ip || 'anonymous';
+            const lockKey = `read_limit:${articleId}:${identifier}`;
+
+            const isLocked = await redis.get(lockKey);
+            if (isLocked) {
+                return; // Skip recording if already read within the window
+            }
+
             // Create ReadLog entry
             await prisma.readLog.create({
                 data: {
@@ -16,6 +27,14 @@ export class AnalyticsService {
                     readerId,
                 },
             });
+
+            // Set lock in Redis with expiry
+            await redis.set(
+                lockKey,
+                '1',
+                'EX',
+                config.readTracking.windowSeconds
+            );
 
             // Enqueue for daily analytics processing (non-blocking)
             await analyticsQueue.add('process-read', {

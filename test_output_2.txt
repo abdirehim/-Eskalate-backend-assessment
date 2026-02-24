@@ -1,0 +1,203 @@
+﻿
+> news-api@1.0.0 test
+> jest --forceExit --detectOpenHandles
+
+node.exe : FAIL src/__tests__/articles.test.ts
+At C:\Program Files\nodejs\npm.ps1:29 char:3
++   & $NODE_EXE $NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (FAIL src/__tests__/articles.test.t 
+   s:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  ΓùÅ PUT /api/v1/articles/:id ΓÇö Story 3: Update Article ΓÇ║ should update an 
+article if the Author owns it
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 422
+
+    [0m [90m 176 |[39m             [33m.[39msend({ title[33m:[39m 
+[32m'Updated Title'[39m })[33m;[39m
+     [90m 177 |[39m
+    [31m[1m>[22m[39m[90m 178 |[39m         
+expect(res[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                            [31m[1m^[22m[39m
+     [90m 179 |[39m         expect(res[33m.[39mbody[33m.[39m[33mSuccess[
+39m)[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+     [90m 180 |[39m         expect(res[33m.[39mbody[33m.[39m[33mObject[3
+9m[33m.[39mtitle)[33m.[39mtoBe([32m'Updated Title'[39m)[33m;[39m
+     [90m 181 |[39m     })[33m;[39m[0m
+
+      at Object.<anonymous> (src/__tests__/articles.test.ts:178:28)
+
+  ΓùÅ PUT /api/v1/articles/:id ΓÇö Story 3: Update Article ΓÇ║ should return 
+403 if an Author tries to edit another Author's article
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: ArrayContaining [StringContaining "own articles"]
+    Received: ["You do not have permission to access this resource"]
+
+    [0m [90m 192 |[39m         
+expect(res[33m.[39mstatus)[33m.[39mtoBe([35m403[39m)[33m;[39m
+     [90m 193 |[39m         expect(res[33m.[39mbody[33m.[39m[33mSuccess[
+39m)[33m.[39mtoBe([36mfalse[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 194 |[39m         
+expect(res[33m.[39mbody[33m.[39m[33mErrors[39m)[33m.[39mtoEqual(
+     [90m     |[39m                                 [31m[1m^[22m[39m
+     [90m 195 |[39m             
+expect[33m.[39marrayContaining([expect[33m.[39mstringContaining([32m'own 
+articles'[39m)])
+     [90m 196 |[39m         )[33m;[39m
+     [90m 197 |[39m     })[33m;[39m[0m
+
+      at Object.<anonymous> (src/__tests__/articles.test.ts:194:33)
+
+  ΓùÅ PUT /api/v1/articles/:id ΓÇö Story 3: Update Article ΓÇ║ should return 
+404 if article does not exist
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 404
+    Received: 422
+
+    [0m [90m 206 |[39m             [33m.[39msend({ title[33m:[39m 
+[32m'New Title'[39m })[33m;[39m
+     [90m 207 |[39m
+    [31m[1m>[22m[39m[90m 208 |[39m         
+expect(res[33m.[39mstatus)[33m.[39mtoBe([35m404[39m)[33m;[39m
+     [90m     |[39m                            [31m[1m^[22m[39m
+     [90m 209 |[39m         expect(res[33m.[39mbody[33m.[39m[33mSuccess[
+39m)[33m.[39mtoBe([36mfalse[39m)[33m;[39m
+     [90m 210 |[39m     })[33m;[39m
+     [90m 211 |[39m })[33m;[39m[0m
+
+      at Object.<anonymous> (src/__tests__/articles.test.ts:208:28)
+
+  ΓùÅ DELETE /api/v1/articles/:id ΓÇö Story 3: Soft Delete ΓÇ║ should 
+soft-delete an article (set deletedAt) and return 200
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 422
+
+    [0m [90m 228 |[39m             
+[33m.[39m[36mset[39m([32m'Authorization'[39m[33m,[39m 
+authorToken)[33m;[39m
+     [90m 229 |[39m
+    [31m[1m>[22m[39m[90m 230 |[39m         
+expect(res[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                            [31m[1m^[22m[39m
+     [90m 231 |[39m         expect(res[33m.[39mbody[33m.[39m[33mSuccess[
+39m)[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+     [90m 232 |[39m         expect(res[33m.[39mbody[33m.[39m[33mMessage[
+39m)[33m.[39mtoMatch([35m/deleted/i[39m)[33m;[39m
+     [90m 233 |[39m     })[33m;[39m[0m
+
+      at Object.<anonymous> (src/__tests__/articles.test.ts:230:28)
+
+  ΓùÅ GET /api/v1/articles/:id ΓÇö Story 5: Read Article + Tracking ΓÇ║ should 
+return the article and record a read log (guest user)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 422
+
+    [0m [90m 327 |[39m         [36mconst[39m res [33m=[39m 
+[36mawait[39m request(app)[33m.[39m[36mget[39m([32m`/api/v1/articles/${fa
+keArticle.id}`[39m)[33m;[39m
+     [90m 328 |[39m
+    [31m[1m>[22m[39m[90m 329 |[39m         
+expect(res[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                            [31m[1m^[22m[39m
+     [90m 330 |[39m         expect(res[33m.[39mbody[33m.[39m[33mSuccess[
+39m)[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+     [90m 331 |[39m         
+expect(res[33m.[39mbody[33m.[39m[33mObject[39m)[33m.[39mtoMatchObject({ 
+id[33m:[39m fakeArticle[33m.[39mid[33m,[39m title[33m:[39m 
+fakeArticle[33m.[39mtitle })[33m;[39m
+     [90m 332 |[39m     })[33m;[39m[0m
+
+      at Object.<anonymous> (src/__tests__/articles.test.ts:329:28)
+
+  ΓùÅ GET /api/v1/articles/:id ΓÇö Story 5: Read Article + Tracking ΓÇ║ should 
+record a read log with readerId if the user is authenticated
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 422
+
+    [0m [90m 341 |[39m             
+[33m.[39m[36mset[39m([32m'Authorization'[39m[33m,[39m 
+readerToken)[33m;[39m
+     [90m 342 |[39m
+    [31m[1m>[22m[39m[90m 343 |[39m         
+expect(res[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m     |[39m                            [31m[1m^[22m[39m
+     [90m 344 |[39m         expect(res[33m.[39mbody[33m.[39m[33mSuccess[
+39m)[33m.[39mtoBe([36mtrue[39m)[33m;[39m
+     [90m 345 |[39m     })[33m;[39m
+     [90m 346 |[39m[0m
+
+      at Object.<anonymous> (src/__tests__/articles.test.ts:343:28)
+
+  ΓùÅ GET /api/v1/articles/:id ΓÇö Story 5: Read Article + Tracking ΓÇ║ should 
+return 404 if article does not exist
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 404
+    Received: 422
+
+    [0m [90m 350 |[39m         [36mconst[39m res [33m=[39m 
+[36mawait[39m request(app)[33m.[39m[36mget[39m([32m'/api/v1/articles/none
+xistent-uuid'[39m)[33m;[39m
+     [90m 351 |[39m
+    [31m[1m>[22m[39m[90m 352 |[39m         
+expect(res[33m.[39mstatus)[33m.[39mtoBe([35m404[39m)[33m;[39m
+     [90m     |[39m                            [31m[1m^[22m[39m
+     [90m 353 |[39m         expect(res[33m.[39mbody[33m.[39m[33mSuccess[
+39m)[33m.[39mtoBe([36mfalse[39m)[33m;[39m
+     [90m 354 |[39m     })[33m;[39m
+     [90m 355 |[39m[0m
+
+      at Object.<anonymous> (src/__tests__/articles.test.ts:352:28)
+
+  ΓùÅ GET /api/v1/articles/:id ΓÇö Story 5: Read Article + Tracking ΓÇ║ should 
+return 410 if article is soft-deleted (no longer available)
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 410
+    Received: 422
+
+    [0m [90m 362 |[39m         [36mconst[39m res [33m=[39m 
+[36mawait[39m request(app)[33m.[39m[36mget[39m([32m`/api/v1/articles/${fa
+keArticle.id}`[39m)[33m;[39m
+     [90m 363 |[39m
+    [31m[1m>[22m[39m[90m 364 |[39m         
+expect(res[33m.[39mstatus)[33m.[39mtoBe([35m410[39m)[33m;[39m
+     [90m     |[39m                            [31m[1m^[22m[39m
+     [90m 365 |[39m         expect(res[33m.[39mbody[33m.[39m[33mSuccess[
+39m)[33m.[39mtoBe([36mfalse[39m)[33m;[39m
+     [90m 366 |[39m         
+expect(res[33m.[39mbody[33m.[39m[33mErrors[39m)[33m.[39mtoEqual(
+     [90m 367 |[39m             
+expect[33m.[39marrayContaining([expect[33m.[39mstringContaining([32m'no 
+longer available'[39m)])[0m
+
+      at Object.<anonymous> (src/__tests__/articles.test.ts:364:28)
+
+PASS src/__tests__/auth.test.ts
+PASS src/__tests__/dashboard.test.ts
+
+Test Suites: 1 failed, 2 passed, 3 total
+Tests:       8 failed, 30 passed, 38 total
+Snapshots:   0 total
+Time:        3.459 s
+Ran all test suites.

@@ -4,10 +4,11 @@ module.exports = {
     testEnvironment: 'node',
     roots: ['<rootDir>/src'],
     testMatch: [
-        '**/__tests__/**/*.ts',
+        '**/__tests__/**/*.test.ts',
         '**/*.test.ts',
         '**/*.spec.ts',
     ],
+    testPathIgnorePatterns: ['/node_modules/', '/src/__tests__/setup.ts'],
     moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/src/$1',
         '^@config/(.*)$': '<rootDir>/src/config/$1',
@@ -27,5 +28,5 @@ module.exports = {
     ],
     coverageDirectory: 'coverage',
     coverageReporters: ['text', 'lcov', 'clover'],
-    setupFilesAfterSetup: ['<rootDir>/src/__tests__/setup.ts'],
+    setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
 };

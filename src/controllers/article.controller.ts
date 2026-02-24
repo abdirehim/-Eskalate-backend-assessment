@@ -47,7 +47,7 @@ export class ArticleController {
      */
     static async update(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
         try {
-            const article = await ArticleService.update(req.params.id, req.user!.sub, req.body);
+            const article = await ArticleService.update(req.params.id as string, req.user!.sub, req.body);
             sendSuccess(res, 'Article updated successfully', article);
         } catch (error) {
             next(error);
@@ -59,7 +59,7 @@ export class ArticleController {
      */
     static async delete(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
         try {
-            const result = await ArticleService.softDelete(req.params.id, req.user!.sub);
+            const result = await ArticleService.softDelete(req.params.id as string, req.user!.sub);
             sendSuccess(res, result.message);
         } catch (error) {
             next(error);
@@ -83,7 +83,7 @@ export class ArticleController {
      */
     static async getById(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
         try {
-            const article = await ArticleService.getById(req.params.id);
+            const article = await ArticleService.getById(req.params.id as string);
 
             if (!article) {
                 sendError(res, 'Article not found', ['Article not found'], 404);
@@ -97,7 +97,7 @@ export class ArticleController {
 
             // Record read event — non-blocking
             const readerId = req.user?.sub || null;
-            AnalyticsService.recordRead(article.id, readerId).catch(() => {
+            AnalyticsService.recordRead(article.id, readerId, req.ip).catch(() => {
                 // Already handled inside the service
             });
 
