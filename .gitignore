@@ -33,3 +33,5 @@ prisma/*.db-journal
 *.tsbuildinfo
 
 agent.md
+temp_auto_push.bat
+temp_interactive_push.bat
